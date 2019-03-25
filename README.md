@@ -22,7 +22,7 @@ In order to setup this environment you need Docker and Docker Compose installed 
 1. Clone this repository.
 2. Copy `.env.sample` file to `src/mage<VER>/.env`.
 3. Customize `.env` files if you need.
-4. CD to `src/mage<VER>` and run `docker-compose up` inside `src/mage<VER>`.
+4. CD to `src/mage<VER>` and run `docker-compose up`.
 5. CD to project root and run `docker build docker/php-cli -t magento2env_php`.
 6. Add `127.0.0.1 magento2.local` to your local hosts file (on Ubuntu: `/etc/hosts`).
 7. Your Magento frontend will be accessible by the following URL: `https://magento2.local:80<VER>`.
@@ -75,12 +75,6 @@ No configuration needed. See: https://www.jetbrains.com/help/phpstorm/zero-confi
 
 ![PHPStorm PHPUnit](docs/phpstorm-phpunit.png)
 
-### 4.3. composer.json
-
-If you need to require some additional packages with Composer, you have to create `composer.local.json` file in Magento root directory. Its content will be merged with `composer.json` file.
-
-The recommended way of installing Magento extensions with this environment is via Composer. `composer.json` is set up in a way that it will treat everything inside `src/modules/*/` as a package.
-
 ## 5. Common routines
 
 ### 5.1. Run already installed Magento
@@ -99,24 +93,30 @@ When you're inside, you act as `docker` user and you can perform any console com
 ### 5.3. Set up your Magento extension to be developed locally
 
 1. GIT clone your extension to `src/modules/<VENDOR>/<NAME>`, eg. `src/modules/Orba/Payupl`.
-2. Add your extension as a dependency to Composer, using `src/mage<VER>/composer.local.json` file (see: 4.3). Example:
+2. Add your extension as a dependency to Composer, using `src/mage<VER>/composer.json` file. Set `*` as a version. Example:
     ```
     {
+        ...
         "require": {
+            ...
             "orba/magento2-payupl": "*"
         }
+        ...
     }
     ```
-3. Run `docker-compose up` (it runs `composer install` automatically).
-4. Run `bin/magento setup:upgrade` inside container.
+3. Go inside container (see: 5.2).
+4. Run `composer update`.
+5. Run `bin/magento setup:upgrade` inside container.
 
-## 6. Planned enhancements
+**Disclaimer:** `composer.json` file is created automatically from a template during first `docker-compose up` run.
 
-1. Local e-mails
-2. Magento 2.3
-
-## 7. Contribution
+## 6. Contribution
 
 Please don't hesitate to create an issue if you found any bug.
 
 Also, please suggest your enhancements either via an issue or a pull request.
+
+## 7. Planned enhancements
+
+1. Local e-mails
+2. Magento 2.3

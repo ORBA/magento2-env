@@ -1,4 +1,4 @@
 *
 !.gitignore
-!composer.json
+!composer.json.sample
 !docker-compose.yml

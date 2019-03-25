@@ -28,8 +28,7 @@
         "magento/module-sales-rule-sample-data": "100.1.*",
         "magento/module-offline-shipping-sample-data": "100.1.*",
         "magento/sample-data-media": "100.1.*",
-        "magento/module-swatches-sample-data": "100.1.*",
-        "wikimedia/composer-merge-plugin": "dev-master"
+        "magento/module-swatches-sample-data": "100.1.*"
     },
     "require-dev": {
         "phpunit/phpunit": "4.1.0",
@@ -83,11 +82,6 @@
         }
     ],
     "extra": {
-        "magento-force": "override",
-        "merge-plugin": {
-            "include": [
-                "composer.local.json"
-            ]
-        }
+        "magento-force": "override"
     }
 }

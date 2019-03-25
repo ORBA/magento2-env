@@ -28,8 +28,7 @@
         "magento/module-grouped-product-sample-data": "100.2.*",
         "magento/module-offline-shipping-sample-data": "100.2.*",
         "magento/sample-data-media": "100.2.*",
-        "magento/module-swatches-sample-data": "100.2.*",
-        "wikimedia/composer-merge-plugin": "dev-master"
+        "magento/module-swatches-sample-data": "100.2.*"
     },
     "require-dev": {
         "phpunit/phpunit": "~6.2.0",
@@ -84,11 +83,6 @@
         }
     ],
     "extra": {
-        "magento-force": "override",
-        "merge-plugin": {
-            "include": [
-                "composer.local.json"
-            ]
-        }
+        "magento-force": "override"
     }
 }
