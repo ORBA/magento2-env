@@ -1,0 +1,36 @@
+version: "3.6"
+
+services:
+  mage22:
+    build: ./../../docker/app
+    links:
+      - db22
+    depends_on:
+      - db22
+    ports:
+      - "8022:443"
+    volumes:
+      - "./:/var/www/html"
+      - "./../modules:/var/www/modules"
+    environment:
+      PHP_EXTENSION_XDEBUG: ${PHP_EXTENSION_XDEBUG}
+      PHP_IDE_CONFIG: "serverName=mage22"
+      CRON_USER: "docker"
+      CRON_SCHEDULE: "* * * * *"
+      CRON_COMMAND: "test -e /var/www/html/app/etc/env.php && php /var/www/html/bin/magento cron:run || echo 'Magento not yet installed'"
+      STARTUP_COMMAND_1: "cp /var/www/auth.json /var/www/html/auth.json"
+      STARTUP_COMMAND_2: "composer install"
+      STARTUP_COMMAND_3: "chmod +x bin/magento"
+      STARTUP_COMMAND_4: "test -e app/etc/env.php && echo 'Magento already installed' || bin/magento setup:install --base-url=https://magento2.local:8022/ --backend-frontname=${MAGENTO_ADMIN_FRONTNAME} --db-host=db22 --db-name=${MYSQL_DATABASE} --db-user=${MYSQL_ROOT_USERNAME} --db-password=${MYSQL_ROOT_PASSWORD} --admin-firstname=${MAGENTO_ADMIN_FIRSTNAME} --admin-lastname=${MAGENTO_ADMIN_LASTNAME} --admin-email=${MAGENTO_ADMIN_EMAIL} --admin-user=${MAGENTO_ADMIN_USER} --admin-password=${MAGENTO_ADMIN_PASSWORD} --language=en_US --currency=USD --timezone=America/Chicago --cleanup-database --use-rewrites=1"
+      STARTUP_COMMAND_5: "bin/magento deploy:mode:set ${MAGENTO_MODE}"
+  db22:
+    image: mysql:5.6
+    volumes:
+      - "db22-data:/var/lib/mysql/data"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "3322:3306"
+volumes:
+  db22-data:
