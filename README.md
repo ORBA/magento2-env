@@ -75,6 +75,10 @@ No configuration needed. See: https://www.jetbrains.com/help/phpstorm/zero-confi
 
 ![PHPStorm PHPUnit](docs/phpstorm-phpunit.png)
 
+#### 4.2.5. E-mail communication
+
+No configuration needed. All e-mails sent by Magento are caught by MailHog. Simply open http://127.0.0.1:8125 in your browser to check them.
+
 ## 5. Common routines
 
 ### 5.1. Run already installed Magento
