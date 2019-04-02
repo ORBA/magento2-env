@@ -122,5 +122,4 @@ Also, please suggest your enhancements either via an issue or a pull request.
 
 ## 7. Planned enhancements
 
-1. Local e-mails
-2. Magento 2.3
+1. Magento 2.3
