@@ -9,9 +9,11 @@ The setup was created using Docker, on top of the following images repository: h
 
 The setup was created on Ubuntu 18.04 and is tested on this OS, however the plan is to make it OS-agnostic.
 
-In current state the setup includes two Magento versions: 2.1.16 and 2.2.6. They are both installed with sample data.
+In current state the setup includes three Magento versions: 2.1.16, 2.2.6 and 2.3.1. They are all installed with sample data.
 
-**Disclaimer:** In many places of this README file the following string is used as a placeholder for Magento version: `<VER>`. Please replace it with `21` for Magento 2.1.16 and `22` for Magento 2.2.6.
+**Disclaimer:** In many places of this README file the following strings are used as placeholders for version numbers:
+* For Magento: `<MAGE_VER>`. Please replace it with `21` for Magento 2.1.16, `22` for Magento 2.2.6 or `23` for Magento 2.3.1.
+* For PHP-CLI: `<PHP_VER>`. Please replace it with `71` for PHP 7.1 or `72` for PHP 7.2.
 
 ## 2. Prerequisites
       
@@ -20,13 +22,12 @@ In order to setup this environment you need Docker and Docker Compose installed 
 ## 3. Installation
 
 1. Clone this repository.
-2. Copy `.env.sample` file to `src/mage<VER>/.env`.
+2. Copy `.env.sample` file to `src/mage<MAGE_VER>/.env`.
 3. Customize `.env` files if you need.
-4. CD to `src/mage<VER>` and run `docker-compose up`.
-5. CD to project root and run `docker build docker/php-cli -t magento2env_php`.
-6. Add `127.0.0.1 magento2.local` to your local hosts file (on Ubuntu: `/etc/hosts`).
-7. Your Magento frontend will be accessible by the following URL: `https://magento2.local:80<VER>`.
-8. Your Magento backend will be accessible by the following URL: `https://magento2.local:80<VER>/admin`. Admin credentials can be found in `.env` file.
+4. CD to `src/mage<MAGE_VER>` and run `docker-compose up`.
+5. Add `127.0.0.1 magento2.local` to your local hosts file (on Ubuntu: `/etc/hosts`).
+6. Your Magento frontend will be accessible by the following URL: `https://magento2.local:80<MAGE_VER>`.
+7. Your Magento backend will be accessible by the following URL: `https://magento2.local:80<MAGE_VER>/admin`. Admin credentials can be found in `.env` file.
 
 ## 4. Additional setup
 
@@ -50,11 +51,13 @@ If you need to access Magento URLs not only from your browsers (eg. CURL), impor
 
 1. Open Settings.
 2. Go to "Languages & Frameworks" > "PHP".
-3. Set "PHP language level" to "7.1".
+3. Set "PHP language level" to the version you will be using.
 4. Create new remote PHP interpreter using Docker:
     * Use Docker server created in 4.2.1
-    * Use `magento2env_php:latest` Docker image
-    * Set "Debugger extension" to `/usr/local/lib/php/extensions/no-debug-non-zts-20160303/xdebug.so`
+    * Use `magento2env_phpcli<PHP_VER>:latest` Docker image
+    * Set "Debugger extension":
+        * for PHP 7.1: `/usr/local/lib/php/extensions/no-debug-non-zts-20160303/xdebug.so`
+        * for PHP 7.2: `/usr/local/lib/php/extensions/no-debug-non-zts-20170718/xdebug.so`
  
 ![PHPStorm PHP](docs/phpstorm-php.png)
 
@@ -70,8 +73,8 @@ No configuration needed. See: https://www.jetbrains.com/help/phpstorm/zero-confi
 2. Go to "Languages & Frameworks" > "PHP" > "Test Frameworks".
 3. Add new config:
     * Use CLI interpreter created in 4.2.2
-    * Use Composer autoloader with following path to script: `/opt/project/src/mage<VER>/vendor/autoload.php`
-    * Set Default configuration file to `/opt/project/src/mage<VER>/dev/tests/unit/phpunit.xml.dist`
+    * Use Composer autoloader with following path to script: `/opt/project/src/mage<MAGE_VER>/vendor/autoload.php`
+    * Set Default configuration file to `/opt/project/src/mage<MAGE_VER>/dev/tests/unit/phpunit.xml.dist`
 
 ![PHPStorm PHPUnit](docs/phpstorm-phpunit.png)
 
@@ -84,20 +87,20 @@ No configuration needed. All e-mails sent by Magento are caught by MailHog. Simp
 ### 5.1. Run already installed Magento
 
 ```
-cd src/mage<VER>
+cd src/mage<MAGE_VER>
 docker-compose up
 ```
 
 ### 5.2. Go inside container (SSH like) 
 
-First find `mage<VER>` container name by running `docker ps`. Then run `docker exec -it <container name> /bin/bash`, example: `docker exec -it magento2env_mage22_1_fcb38b06f0c6 /bin/bash`.
+First find `mage<MAGE_VER>` container name by running `docker ps`. Then run `docker exec -it <container name> /bin/bash`, example: `docker exec -it magento2env_mage22_1_fcb38b06f0c6 /bin/bash`.
 
 When you're inside, you act as `docker` user and you can perform any console command (also with `sudo`), eg. `bin/magento`.
 
 ### 5.3. Set up your Magento extension to be developed locally
 
-1. GIT clone your extension to `src/modules/<VENDOR>/<NAME>`, eg. `src/modules/Orba/Payupl`.
-2. Add your extension as a dependency to Composer, using `src/mage<VER>/composer.json` file. Set `*` as a version. Example:
+1. GIT clone your extension to `src/modules/<VENDOR>/<Extension>`, eg. `src/modules/Orba/Payupl`.
+2. Add your extension as a dependency to Composer, using `src/mage<MAGE_VER>/composer.json` file. Set `*` as a version. Example:
     ```
     {
         ...
@@ -114,12 +117,21 @@ When you're inside, you act as `docker` user and you can perform any console com
 
 **Disclaimer:** `composer.json` file is created automatically from a template during first `docker-compose up` run.
 
+**Watchout:** This setup requires that your extension's `registration.php` looks like this:
+
+```php
+<?php
+\Magento\Framework\Component\ComponentRegistrar::register(
+    \Magento\Framework\Component\ComponentRegistrar::MODULE,
+    'Vendor_Extension',
+    isset($file) ? dirname($file) : __DIR__
+);
+```
+
+This is a workaround for symbolic links issue.
+
 ## 6. Contribution
 
 Please don't hesitate to create an issue if you found any bug.
 
 Also, please suggest your enhancements either via an issue or a pull request.
-
-## 7. Planned enhancements
-
-1. Magento 2.3

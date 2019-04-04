@@ -1,29 +1,29 @@
 version: "3.6"
 
 services:
-  phpcli71:
+  phpcli72:
     build:
       context: ./../../docker/php-cli
-      dockerfile: build/71/Dockerfile
+      dockerfile: build/72/Dockerfile
     volumes:
       - "./:/var/www/html"
       - "./../modules:/var/www/modules"
-  mage22:
+  mage23:
     build:
       context: ./../../docker/app
-      dockerfile: build/71/Dockerfile
+      dockerfile: build/72/Dockerfile
     links:
-      - db22
+      - db23
     depends_on:
-      - db22
+      - db23
     ports:
-      - "8022:443"
+      - "8023:443"
     volumes:
       - "./:/var/www/html"
       - "./../modules:/var/www/modules"
     environment:
       PHP_EXTENSION_XDEBUG: ${PHP_EXTENSION_XDEBUG}
-      PHP_IDE_CONFIG: "serverName=mage22"
+      PHP_IDE_CONFIG: "serverName=mage23"
       CRON_USER: "docker"
       CRON_SCHEDULE: "* * * * *"
       CRON_COMMAND: "test -e /var/www/html/app/etc/env.php && php /var/www/html/bin/magento cron:run || echo 'Magento not yet installed'"
@@ -31,17 +31,17 @@ services:
       STARTUP_COMMAND_2: "test -e composer.json || cp composer.json.sample composer.json"
       STARTUP_COMMAND_3: "composer install"
       STARTUP_COMMAND_4: "chmod +x bin/magento"
-      STARTUP_COMMAND_5: "test -e app/etc/env.php && echo 'Magento already installed' || bin/magento setup:install --base-url=https://magento2.local:8022/ --backend-frontname=${MAGENTO_ADMIN_FRONTNAME} --db-host=db22 --db-name=${MYSQL_DATABASE} --db-user=${MYSQL_ROOT_USERNAME} --db-password=${MYSQL_ROOT_PASSWORD} --admin-firstname=${MAGENTO_ADMIN_FIRSTNAME} --admin-lastname=${MAGENTO_ADMIN_LASTNAME} --admin-email=${MAGENTO_ADMIN_EMAIL} --admin-user=${MAGENTO_ADMIN_USER} --admin-password=${MAGENTO_ADMIN_PASSWORD} --language=en_US --currency=USD --timezone=America/Chicago --cleanup-database --use-rewrites=1"
+      STARTUP_COMMAND_5: "test -e app/etc/env.php && echo 'Magento already installed' || bin/magento setup:install --base-url=https://magento2.local:8023/ --backend-frontname=${MAGENTO_ADMIN_FRONTNAME} --db-host=db23 --db-name=${MYSQL_DATABASE} --db-user=${MYSQL_ROOT_USERNAME} --db-password=${MYSQL_ROOT_PASSWORD} --admin-firstname=${MAGENTO_ADMIN_FIRSTNAME} --admin-lastname=${MAGENTO_ADMIN_LASTNAME} --admin-email=${MAGENTO_ADMIN_EMAIL} --admin-user=${MAGENTO_ADMIN_USER} --admin-password=${MAGENTO_ADMIN_PASSWORD} --language=en_US --currency=USD --timezone=America/Chicago --cleanup-database --use-rewrites=1"
       STARTUP_COMMAND_6: "bin/magento deploy:mode:set ${MAGENTO_MODE}"
-  db22:
+  db23:
     image: mysql:5.6
     volumes:
-      - "db22-data:/var/lib/mysql/data"
+      - "db23-data:/var/lib/mysql/data"
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
     ports:
-      - "3322:3306"
+      - "3323:3306"
   mailhog:
     image: mailhog/mailhog
     restart: always
@@ -49,4 +49,4 @@ services:
       - "1025:1025"
       - "8125:8025"
 volumes:
-  db22-data:
+  db23-data:

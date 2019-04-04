@@ -1,8 +1,17 @@
 version: "3.6"
 
 services:
+  phpcli71:
+    build:
+      context: ./../../docker/php-cli
+      dockerfile: build/71/Dockerfile
+    volumes:
+      - "./:/var/www/html"
+      - "./../modules:/var/www/modules"
   mage21:
-    build: ./../../docker/app
+    build:
+      context: ./../../docker/app
+      dockerfile: build/71/Dockerfile
     links:
       - db21
     depends_on:

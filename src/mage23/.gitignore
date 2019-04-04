@@ -1,0 +1,4 @@
+*
+!.gitignore
+!composer.json.sample
+!docker-compose.yml
