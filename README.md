@@ -9,10 +9,10 @@ The setup was created using Docker, on top of the following images repository: h
 
 The setup was created on Ubuntu 18.04 and is tested on this OS, however the plan is to make it OS-agnostic.
 
-In current state the setup includes three Magento versions: 2.1.16, 2.2.6 and 2.3.1. They are all installed with sample data.
+In current state the setup includes three Magento versions: 2.1.17, 2.2.8 and 2.3.1. They are all installed with sample data.
 
 **Disclaimer:** In many places of this README file the following strings are used as placeholders for version numbers:
-* For Magento: `<MAGE_VER>`. Please replace it with `21` for Magento 2.1.16, `22` for Magento 2.2.6 or `23` for Magento 2.3.1.
+* For Magento: `<MAGE_VER>`. Please replace it with `21` for Magento 2.1.17, `22` for Magento 2.2.8 or `23` for Magento 2.3.1.
 * For PHP-CLI: `<PHP_VER>`. Please replace it with `71` for PHP 7.1 or `72` for PHP 7.2.
 
 ## 2. Prerequisites

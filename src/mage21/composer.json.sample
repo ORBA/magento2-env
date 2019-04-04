@@ -1,13 +1,13 @@
 {
     "name": "orba/magento2-env-21",
     "type": "project",
-    "version": "2.1.16",
+    "version": "2.1.17",
     "license": [
         "OSL-3.0",
         "AFL-3.0"
     ],
     "require": {
-        "magento/product-community-edition": "2.1.16",
+        "magento/product-community-edition": "2.1.17",
         "composer/composer": "@alpha",
         "magento/module-bundle-sample-data": "100.1.*",
         "magento/module-customer-sample-data": "100.1.*",
