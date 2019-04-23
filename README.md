@@ -63,11 +63,26 @@ If you need to access Magento URLs not only from your browsers (eg. CURL), impor
 
 ![PHPStorm PHP Interpreter](docs/phpstorm-php-interpreter.png)
 
-#### 4.2.3. Xdebug
+#### 4.2.3. PHP Server
 
-No configuration needed. See: https://www.jetbrains.com/help/phpstorm/zero-configuration-debugging.html
+1. Open Settings.
+2. Go to "Languages & Frameworks" > "PHP" > "Servers".
+3. Add new server:
+    * Name it `mage<MAGE_VER>`
+    * Put `magento2.local` as a host
+    * Put `80<MAGE_VER>` as a port
+    * Put `Xdebug` as a debugger
+    * Set path mapping:
+        * `src/mage<MAGE_VER>` > `/var/www/html`
+        * `src/modules` > `/var/www/modules`
 
-#### 4.2.4. PHPUnit
+![PHPStorm PHP Server](docs/phpstorm-php-server.png) 
+
+#### 4.2.4. Xdebug
+
+No configuration needed for debugging browser requests. See: https://www.jetbrains.com/help/phpstorm/zero-configuration-debugging.html
+
+#### 4.2.5. PHPUnit
 
 1. Open Settings.
 2. Go to "Languages & Frameworks" > "PHP" > "Test Frameworks".
@@ -78,7 +93,7 @@ No configuration needed. See: https://www.jetbrains.com/help/phpstorm/zero-confi
 
 ![PHPStorm PHPUnit](docs/phpstorm-phpunit.png)
 
-#### 4.2.5. E-mail communication
+#### 4.2.6. E-mail communication
 
 No configuration needed. All e-mails sent by Magento are caught by MailHog. Simply open http://127.0.0.1:8125 in your browser to check them.
 
@@ -100,13 +115,13 @@ When you're inside, you act as `docker` user and you can perform any console com
 ### 5.3. Set up your Magento extension to be developed locally
 
 1. GIT clone your extension to `src/modules/<VENDOR>/<Extension>`, eg. `src/modules/Orba/Payupl`.
-2. Add your extension as a dependency to Composer, using `src/mage<MAGE_VER>/composer.json` file. Set `*` as a version. Example:
+2. Add your extension as a dependency to Composer, using `src/mage<MAGE_VER>/composer.json` file. Set the same version as in extension's `composer.json` file. Example:
     ```
     {
         ...
         "require": {
             ...
-            "orba/magento2-payupl": "*"
+            "orba/magento2-payupl": "2.0.0-dev"
         }
         ...
     }
@@ -114,6 +129,7 @@ When you're inside, you act as `docker` user and you can perform any console com
 3. Go inside container (see: 5.2).
 4. Run `composer update`.
 5. Run `bin/magento setup:upgrade` inside container.
+6. If your extension uses template files, you need to set config value "Advanced > Developer > Template Settings > Allow Symlinks" to "Yes".
 
 **Disclaimer:** `composer.json` file is created automatically from a template during first `docker-compose up` run.
 
@@ -129,6 +145,13 @@ When you're inside, you act as `docker` user and you can perform any console com
 ```
 
 This is a workaround for symbolic links issue.
+
+### 5.4. Xdebug console script
+
+1. Enable Listening for PHP Debug Connections (green icon in toolbar)
+2. Go inside container (see: 5.2).
+3. Run `export XDEBUG_CONFIG="idekey=123"` (this is needed only once per session).
+4. Run your PHP script with the following param: `-dxdebug.remote_enable=1`, eg. `php -dxdebug.remote_enable=1 bin/magento`.
 
 ## 6. Contribution
 
