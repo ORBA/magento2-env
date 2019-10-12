@@ -5,7 +5,20 @@ FROM thecodingmachine/php:7.2-v2-slim-apache
 
 USER root
 
-RUN apt-get update && apt-get install ssmtp -y
+RUN rm -rf /var/lib/apt/lists/* && \
+    apt-get update && \
+    apt-get install --yes \
+    ssmtp \
+	apt-transport-https \
+	lsb-release \
+	ca-certificates \
+	wget && \
+    wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg && \
+    echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list && \
+    apt-get update && \
+    apt-get dist-upgrade --yes
+RUN apt-get install -y libsodium-dev
+RUN docker-php-ext-install sodium
 
 COPY files/auth.json /var/www/auth.json
 COPY files/magento2local.crt /etc/apache2/ssl/magento2local.crt
