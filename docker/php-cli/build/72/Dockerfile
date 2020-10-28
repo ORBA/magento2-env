@@ -3,7 +3,6 @@ FROM php:7.2-cli
 RUN rm -rf /var/lib/apt/lists/* && \
     apt-get update && \
     apt-get install --yes \
-    ssmtp \
 	apt-transport-https \
 	lsb-release \
 	ca-certificates \
@@ -18,7 +17,6 @@ RUN apt-get update && apt-get install -y \
     libjpeg62-turbo-dev \
     libpng-dev \
     libicu-dev \
-    libicu57 \
     libsodium-dev \
     libxml2-dev \
     libxml2 \
